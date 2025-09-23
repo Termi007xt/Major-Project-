@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { pgTable, text, varchar, decimal, timestamp, jsonb, boolean, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -153,3 +153,47 @@ export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Milestone = typeof milestones.$inferSelect;
 export type InsertMilestone = z.infer<typeof insertMilestoneSchema>;
+
+// Database Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  clientProjects: many(projects, { relationName: "client" }),
+  freelancerProjects: many(projects, { relationName: "freelancer" }),
+  proposals: many(proposals),
+  sentMessages: many(messages, { relationName: "sender" }),
+  receivedMessages: many(messages, { relationName: "receiver" }),
+}));
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  client: one(users, { fields: [projects.clientId], references: [users.id], relationName: "client" }),
+  freelancer: one(users, { fields: [projects.freelancerId], references: [users.id], relationName: "freelancer" }),
+  modules: many(projectModules),
+  smartContract: one(smartContracts),
+  proposals: many(proposals),
+  messages: many(messages),
+  milestones: many(milestones),
+}));
+
+export const projectModulesRelations = relations(projectModules, ({ one, many }) => ({
+  project: one(projects, { fields: [projectModules.projectId], references: [projects.id] }),
+  milestones: many(milestones),
+}));
+
+export const smartContractsRelations = relations(smartContracts, ({ one }) => ({
+  project: one(projects, { fields: [smartContracts.projectId], references: [projects.id] }),
+}));
+
+export const proposalsRelations = relations(proposals, ({ one }) => ({
+  project: one(projects, { fields: [proposals.projectId], references: [projects.id] }),
+  freelancer: one(users, { fields: [proposals.freelancerId], references: [users.id] }),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  project: one(projects, { fields: [messages.projectId], references: [projects.id] }),
+  sender: one(users, { fields: [messages.senderId], references: [users.id], relationName: "sender" }),
+  receiver: one(users, { fields: [messages.receiverId], references: [users.id], relationName: "receiver" }),
+}));
+
+export const milestonesRelations = relations(milestones, ({ one }) => ({
+  project: one(projects, { fields: [milestones.projectId], references: [projects.id] }),
+  module: one(projectModules, { fields: [milestones.moduleId], references: [projectModules.id] }),
+}));
