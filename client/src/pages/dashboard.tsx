@@ -5,6 +5,7 @@ import ProjectCard from "@/components/project-card";
 import PostProjectModal from "@/components/post-project-modal";
 import FreelancerGrid from "@/components/freelancer-grid";
 import MessagingInterface from "@/components/messaging-interface";
+import { WalletConnection, WalletConnectionCompact } from "@/components/wallet-connection";
 import type { Project, User } from "@shared/schema";
 
 export default function Dashboard() {
@@ -55,8 +56,15 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Project Dashboard</h1>
-          <p className="text-muted-foreground">Manage your blockchain-powered freelancing projects</p>
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Project Dashboard</h1>
+              <p className="text-muted-foreground">Manage your blockchain-powered freelancing projects</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <WalletConnectionCompact />
+            </div>
+          </div>
         </div>
 
         {/* Tabs Navigation */}
@@ -107,8 +115,49 @@ export default function Dashboard() {
 
         {activeTab === "smart-contracts" && (
           <div className="space-y-6" data-testid="content-smart-contracts">
-            <div className="text-center py-12">
-              <div className="text-muted-foreground">Smart contracts feature coming soon</div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Wallet Connection */}
+              <div className="flex justify-center">
+                <WalletConnection />
+              </div>
+              
+              {/* Smart Contract Info */}
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold">Blockchain Features</h2>
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-medium mb-2">🔗 Smart Contract Escrow</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Secure milestone-based payments with automated escrow release. 
+                      Connect your wallet to deploy project contracts.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-medium mb-2">💰 Cryptocurrency Payments</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Pay and receive payments in ETH on Sepolia testnet. 
+                      Real money handling for production deployments.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-medium mb-2">📦 On-Chain Project Storage</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Store project modules and deliverables on-chain with IPFS integration 
+                      for permanent, decentralized file storage.
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-medium mb-2">⚖️ Decentralized Disputes</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Community-driven dispute resolution with automated arbitration 
+                      and transparent voting mechanisms.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
